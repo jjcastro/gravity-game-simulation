@@ -1,8 +1,26 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <style type="text/css">
+      #info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 10px;
+      }
+
+      body {
+        margin: 0;
+      }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
     <script src="sketch.js"></script>
   </head>
   <body>
+    <div id="info">
+    Bodies: <span id="bodies"></span><br/>
+    <b>Click and drag</b> to create a moving object <br/>
+    <b>Press F</b> to toggle forces
+    </div>
   </body>
 </html>
