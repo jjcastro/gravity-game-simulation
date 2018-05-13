@@ -5,11 +5,13 @@ var lastReleased;
 var launchSpeedFactor = 0.1;
 var bigG = 20;
 var density = 2;
+var slowFactor = 0.1;
 
 var bodyColor = 230;
 
 var showForces = true;
 var playing = true;
+var slowMotion = false;
 
 function Body() {
   // pixels per frame
@@ -22,8 +24,10 @@ function Body() {
 
   this.move = function() {
     if (playing && !this.fixed) {
+
+      var speedFactor = slowMotion ? slowFactor : 1;
       // velocity
-      this.pos.add(this.vel);
+      this.pos.add(p5.Vector.mult(this.vel, speedFactor));
       
       // acceleration
       var acc = p5.Vector.div(this.force, this.mass);
@@ -88,23 +92,26 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  var b = new Body();
-  b.pos.x = lastPressed.x;
-  b.pos.y = lastPressed.y;
-  b.mass = 15;
+  if (launching) {
+    var b = new Body();
 
-  b.vel = createVector(
-    lastPressed.x - mouseX,
-    lastPressed.y - mouseY
-  ); 
+    b.pos.x = lastPressed.x;
+    b.pos.y = lastPressed.y;
+    b.mass = 15;
 
-  if (b.vel.mag() < 5) {
-    b.vel = createVector(0,0);
-  } else {
-    b.vel.mult(launchSpeedFactor);  
+    b.vel = createVector(
+      lastPressed.x - mouseX,
+      lastPressed.y - mouseY
+    ); 
+
+    if (b.vel.mag() < 5) {
+      b.vel = createVector(0,0);
+    } else {
+      b.vel.mult(launchSpeedFactor);  
+    }
+    
+    bodies.push(b);
   }
-  
-  bodies.push(b);
 
   launching = false;
 }
@@ -114,6 +121,8 @@ function keyPressed() {
     showForces = !showForces;
   } else if (keyCode == 80) {
     playing = !playing;
+  } else if (keyCode == 83) {
+    slowMotion = !slowMotion;
   }
   console.log(keyCode);
 }
