@@ -9,53 +9,49 @@ var density = 2;
 var bodyColor = 230;
 
 var showForces = true;
+var playing = true;
 
 function Body() {
-// pixels per frame
-    this.vel = createVector(0,0); 
-    this.pos =  createVector(0,0);
-    this.force =  createVector(0,0);
-    // both mass and mass
-    this.mass = 5;
-    this.fixed = false;
+  // pixels per frame
+  this.vel = createVector(0,0); 
+  this.pos =  createVector(0,0);
+  this.force =  createVector(0,0);
+  // both mass and mass
+  this.mass = 5;
+  this.fixed = false;
 
-    this.move = function() {
-      if (!this.fixed) {
-        // velocity
-        this.pos.add(this.vel);
-        
-        // acceleration
-        var acc = p5.Vector.div(this.force, this.mass);
-        this.vel.add(acc);
-      }
+  this.move = function() {
+    if (playing && !this.fixed) {
+      // velocity
+      this.pos.add(this.vel);
+      
+      // acceleration
+      var acc = p5.Vector.div(this.force, this.mass);
+      this.vel.add(acc);
     }
+  }
 
-    this.size = function() {
-      return this.mass / density;
-    }
+  this.size = function() {
+    return this.mass / density;
+  }
 
-    this.drawDot = function() {
-      fill(bodyColor);
-      ellipse(this.pos.x, this.pos.y, this.size(), this.size());
+  this.drawDot = function() {
+    fill(bodyColor);
+    ellipse(this.pos.x, this.pos.y, this.size(), this.size());
+    fill(255);
+
+    if (showForces) {
+      var forceV = p5.Vector.add(this.pos, p5.Vector.mult(this.force, 5));
+      stroke(255, 0, 0);
+      fill(255, 0, 0);
+
+      line(this.pos.x, this.pos.y, forceV.x, forceV.y);
+      ellipse(forceV.x, forceV.y, 2, 2);
+
+      stroke(0,0,0);
       fill(255);
-
-      if (showForces) {
-        var forceV = p5.Vector.add(this.pos, p5.Vector.mult(this.force, 5));
-        stroke(255, 0, 0);
-        fill(255, 0, 0);
-
-        line(this.pos.x, this.pos.y, forceV.x, forceV.y);
-        ellipse(forceV.x, forceV.y, 2, 2);
-
-        stroke(0,0,0);
-        fill(255);
-      }
     }
-
-    this.interact = function(body2) {
-      
-      
-    }
+  }
 }
 
 var bodies = [];
@@ -92,25 +88,23 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  if (launching) {
-    var b = new Body();
-    b.pos.x = lastPressed.x;
-    b.pos.y = lastPressed.y;
-    b.mass = 15;
+  var b = new Body();
+  b.pos.x = lastPressed.x;
+  b.pos.y = lastPressed.y;
+  b.mass = 15;
 
-    b.vel = createVector(
-      lastPressed.x - mouseX,
-      lastPressed.y - mouseY
-    ); 
+  b.vel = createVector(
+    lastPressed.x - mouseX,
+    lastPressed.y - mouseY
+  ); 
 
-    if (b.vel.mag() < 5) {
-      b.vel = createVector(0,0);
-    } else {
-      b.vel.mult(launchSpeedFactor);  
-    }
-    
-    bodies.push(b);
+  if (b.vel.mag() < 5) {
+    b.vel = createVector(0,0);
+  } else {
+    b.vel.mult(launchSpeedFactor);  
   }
+  
+  bodies.push(b);
 
   launching = false;
 }
@@ -118,8 +112,10 @@ function mouseReleased() {
 function keyPressed() {
   if (keyCode == 70) {
     showForces = !showForces;
+  } else if (keyCode == 80) {
+    playing = !playing;
   }
-
+  console.log(keyCode);
 }
 
 function draw() {
@@ -161,7 +157,4 @@ function draw() {
   });
 
   document.getElementById('bodies').innerHTML = bodies.length;
-  // showForces = document.getElementById('forces').checked;
-
-  // console.log($('#forces').checked());/
 }

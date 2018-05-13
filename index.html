@@ -12,15 +12,26 @@
       body {
         margin: 0;
       }
+
+      .red {
+        color: red;
+      }
+
+      .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
     <script src="sketch.js"></script>
   </head>
   <body>
-    <div id="info">
+    <div id="info" class="noselect">
     Bodies: <span id="bodies"></span><br/>
     <b>Click and drag</b> to create a moving object <br/>
-    <b>Press F</b> to toggle forces
+    <b>Press P</b> to pause simulation<br/>
+    <b>Press F</b> to toggle <span class="red">force vectors</span>
     </div>
   </body>
 </html>
